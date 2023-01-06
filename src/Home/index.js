@@ -13,11 +13,12 @@ import ApiCall from '../utiles';
 import Header from '../Components';
 
 const RenderCard = props => {
-  const {data, navigation} = props;
+  const {data, usersData, navigation} = props;
   const [isFav, setIsFav] = useState(false);
 
   const handleFav = () => setIsFav(v => !v);
-  const navToDetailsScreen = () => navigation.navigate('DetailsScreen');
+  const navToDetailsScreen = () =>
+    navigation.navigate('DetailsScreen', {data, usersData});
 
   return (
     <View style={styles.renderCardContainer}>
@@ -86,7 +87,7 @@ function Dashboard(props) {
           style={styles.contentContainer}
           showsVerticalScrollIndicator={false}
           renderItem={({item, index}) => (
-            <RenderCard index={index} data={item} {...props} />
+            <RenderCard index={index} data={item} usersData={data} {...props} />
           )}
         />
       </View>
