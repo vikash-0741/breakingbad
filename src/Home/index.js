@@ -1,12 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import {
-  FlatList,
-  Image,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import React, {useEffect} from 'react';
+import {FlatList, StyleSheet, TouchableOpacity, View} from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Header from '../Components';
@@ -23,6 +16,7 @@ function Dashboard(props) {
 
   useEffect(() => {
     getUsersData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const navToFav = () => navigation.navigate('favourite');
@@ -32,12 +26,10 @@ function Dashboard(props) {
     <View style={styles.container}>
       <View style={styles.headerContainer}>
         <Header headerTitle=" The Breaking bad" />
-        <TouchableOpacity style={{marginTop: 50}} onPress={navToSearch}>
+        <TouchableOpacity style={styles.navToSearch} onPress={navToSearch}>
           <Feather name="search" size={24} color="#fff" />
         </TouchableOpacity>
-        <TouchableOpacity
-          onPress={navToFav}
-          style={{marginTop: 50, marginLeft: 10}}>
+        <TouchableOpacity onPress={navToFav} style={styles.navToFav}>
           <AntDesign name="heart" size={24} color="#16ca75" />
         </TouchableOpacity>
       </View>
@@ -108,6 +100,13 @@ const styles = StyleSheet.create({
   subHeadingName: {
     color: '#fff',
     marginTop: 3,
+  },
+  navToSearch: {
+    marginTop: 50,
+  },
+  navToFav: {
+    marginTop: 50,
+    marginLeft: 10,
   },
 });
 

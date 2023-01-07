@@ -3,20 +3,13 @@ import {View, Text, TouchableOpacity, StyleSheet, FlatList} from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import RenderCard from '../Components/RenderCard/RenderCard';
 import {useSelector} from 'react-redux';
+import NoResult from '../Components/NoResult';
 
 const Header = props => {
   const {navigation} = props;
   return (
-    <View
-      style={{
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        marginTop: 50,
-        padding: 20,
-      }}>
-      <Text style={{color: '#16ca75', fontWeight: '600', fontSize: 24}}>
-        Favourites
-      </Text>
+    <View style={styles.headerFav}>
+      <Text style={styles.favText}>Favourites</Text>
       <TouchableOpacity onPress={() => navigation.goBack()}>
         <AntDesign name="close" size={24} color="#fff" />
       </TouchableOpacity>
@@ -33,20 +26,24 @@ function Favourite(props) {
   }, [users]);
 
   return (
-    <View style={{backgroundColor: '#000', flex: 1}}>
+    <View style={styles.favoriteContainer}>
       <Header {...props} />
       <View style={styles.cardContainer}>
-        <FlatList
-          data={favoriteUser}
-          numColumns={2}
-          horizontal={false}
-          keyExtractor={(item, index) => index.toString()}
-          style={styles.contentContainer}
-          showsVerticalScrollIndicator={false}
-          renderItem={({item, index}) => (
-            <RenderCard key={item.id} data={item} {...props} />
-          )}
-        />
+        {favoriteUser.length ? (
+          <FlatList
+            data={favoriteUser}
+            numColumns={2}
+            horizontal={false}
+            keyExtractor={(item, index) => index.toString()}
+            style={styles.contentContainer}
+            showsVerticalScrollIndicator={false}
+            renderItem={({item, index}) => (
+              <RenderCard key={item.id} data={item} {...props} />
+            )}
+          />
+        ) : (
+          <NoResult />
+        )}
       </View>
     </View>
   );
@@ -101,6 +98,21 @@ const styles = StyleSheet.create({
   subHeadingName: {
     color: '#fff',
     marginTop: 3,
+  },
+  headerFav: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 50,
+    padding: 20,
+  },
+  favText: {
+    color: '#16ca75',
+    fontWeight: '600',
+    fontSize: 24,
+  },
+  favoriteContainer: {
+    backgroundColor: '#000',
+    flex: 1,
   },
 });
 

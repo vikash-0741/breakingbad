@@ -1,25 +1,25 @@
 import React from 'react';
-import {Text, TouchableOpacity, View} from 'react-native';
-import Feather from 'react-native-vector-icons/Feather';
+import {StyleSheet, Text, View} from 'react-native';
 
 const Header = () => {
   return (
-    <View
-      style={{
-        flex: 1,
-        margin: 10,
-        marginTop: 50,
-      }}>
-      <Text
-        style={{
-          fontSize: 24,
-          color: '#fff',
-          fontWeight: '800',
-        }}>
-        The Breaking bad
-      </Text>
+    <View style={styles.header}>
+      <Text style={styles.title}>The Breaking bad</Text>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  header: {
+    flex: 1,
+    margin: 10,
+    marginTop: 50,
+  },
+  title: {
+    fontSize: 24,
+    color: '#fff',
+    fontWeight: '800',
+  },
+});
 
 export default Header;

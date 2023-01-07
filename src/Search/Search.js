@@ -1,9 +1,20 @@
 import React, {useMemo, useState} from 'react';
-import {FlatList, TextInput, View, StyleSheet} from 'react-native';
+import {
+  FlatList,
+  TextInput,
+  View,
+  StyleSheet,
+  SafeAreaView,
+  TouchableOpacity,
+} from 'react-native';
 import {useSelector} from 'react-redux';
 import RenderCard from '../Components/RenderCard/RenderCard';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import NoResult from '../Components/NoResult';
 
 const Search = props => {
+  const {navigation} = props;
   const [searchText, setSearchText] = useState('');
   const {users} = useSelector(s => s.users);
 
@@ -17,26 +28,51 @@ const Search = props => {
   }, [users, searchText]);
 
   return (
-    <View style={styles.container}>
-      <TextInput
-        onChangeText={e => setSearchText(e)}
-        value={searchText}
-        placeholder="Search..."
-      />
-      <View style={styles.cardContainer}>
-        <FlatList
-          data={searchedUsers}
-          numColumns={2}
-          horizontal={false}
-          keyExtractor={(item, index) => index.toString()}
-          style={styles.contentContainer}
-          showsVerticalScrollIndicator={false}
-          renderItem={({item, index}) => (
-            <RenderCard {...props} key={item.id} data={item} />
+    <SafeAreaView style={styles.safeAreaView}>
+      <View style={styles.container}>
+        <View style={styles.searchContainer}>
+          <View style={styles.backContainer}>
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              <MaterialCommunityIcons
+                name="keyboard-backspace"
+                size={28}
+                color="#fff"
+              />
+            </TouchableOpacity>
+            <TextInput
+              onChangeText={e => setSearchText(e)}
+              value={searchText}
+              placeholder="Search"
+              placeholderTextColor="#fff"
+              cursorColor="#fff"
+              style={styles.input}
+            />
+          </View>
+          <TouchableOpacity
+            style={styles.clearText}
+            onPress={() => setSearchText('')}>
+            <AntDesign name="close" size={24} color="#fff" />
+          </TouchableOpacity>
+        </View>
+        <View style={styles.cardContainer}>
+          {searchedUsers.length ? (
+            <FlatList
+              data={searchedUsers}
+              numColumns={2}
+              horizontal={false}
+              keyExtractor={(item, index) => index.toString()}
+              style={styles.contentContainer}
+              showsVerticalScrollIndicator={false}
+              renderItem={({item, index}) => (
+                <RenderCard {...props} key={item.id} data={item} />
+              )}
+            />
+          ) : (
+            <NoResult color="#16ca75" title="No Character Found" />
           )}
-        />
+        </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -54,7 +90,8 @@ const styles = StyleSheet.create({
   },
   cardContainer: {
     flexGrow: 1,
-    marginTop: 30,
+    marginTop: 15,
+    backgroundColor: '#000',
   },
   contentContainer: {
     flexDirection: 'column',
@@ -89,6 +126,31 @@ const styles = StyleSheet.create({
   subHeadingName: {
     color: '#fff',
     marginTop: 3,
+  },
+  safeAreaView: {
+    flex: 1,
+  },
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    backgroundColor: 'rgb(36,36,36)',
+    paddingBottom: 20,
+  },
+  backContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  input: {
+    fontSize: 24,
+    marginLeft: 20,
+    color: '#fff',
+    fontWeight: '100',
+  },
+  clearText: {
+    marginTop: 10,
   },
 });
 
