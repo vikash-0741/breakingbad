@@ -12,8 +12,10 @@ import {
   StyleSheet,
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import Feather from 'react-native-vector-icons/Feather';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useSelector} from 'react-redux';
+import useOrderActions from '../Store/Actions/Home';
 
 const {width: SCREEN_WIDTH, height: SCREEN_HEIGHT} = Dimensions.get('window');
 
@@ -39,7 +41,13 @@ const RenderCard = props => {
 };
 
 const Header = props => {
-  const {navigation} = props;
+  const {navigation, data} = props;
+  const {id, favorite} = data || {};
+
+  const {handleFav} = useOrderActions();
+
+  const handleFavClick = () => handleFav(id);
+
   return (
     <View style={styles.headerContainer}>
       <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -49,8 +57,12 @@ const Header = props => {
           color="#fff"
         />
       </TouchableOpacity>
-      <TouchableOpacity>
-        <AntDesign name="heart" size={24} color="#16ca75" />
+      <TouchableOpacity onPress={handleFavClick}>
+        {favorite ? (
+          <AntDesign name="heart" size={24} color="#16ca75" />
+        ) : (
+          <Feather name="heart" size={24} color="#636363" />
+        )}
       </TouchableOpacity>
     </View>
   );
@@ -138,6 +150,10 @@ function DetailsScreen(props) {
 
   const {users} = useSelector(s => s.users);
 
+  const selectedUser = useMemo(() => {
+    return users.filter(i => i.id === data.id);
+  }, [data, users]);
+
   const otherUser = useMemo(() => {
     return users.filter(i => i.id !== data.id);
   }, [data, users]);
@@ -145,7 +161,7 @@ function DetailsScreen(props) {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
-        <Header {...props} />
+        <Header {...props} data={selectedUser[0]} />
         <UserProfile data={data} />
         <UserDetails />
         <OtherCharacters {...props} usersData={otherUser} />
