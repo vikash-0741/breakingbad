@@ -1,56 +1,44 @@
-import React, {useMemo} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, FlatList} from 'react-native';
-import AntDesign from 'react-native-vector-icons/AntDesign';
-import RenderCard from '../Components/RenderCard/RenderCard';
+import React, {useMemo, useState} from 'react';
+import {FlatList, TextInput, View, StyleSheet} from 'react-native';
 import {useSelector} from 'react-redux';
+import RenderCard from '../Components/RenderCard/RenderCard';
 
-const Header = props => {
-  const {navigation} = props;
-  return (
-    <View
-      style={{
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        marginTop: 50,
-        padding: 20,
-      }}>
-      <Text style={{color: '#16ca75', fontWeight: '600', fontSize: 24}}>
-        Favourites
-      </Text>
-      <TouchableOpacity onPress={() => navigation.goBack()}>
-        <AntDesign name="close" size={24} color="#fff" />
-      </TouchableOpacity>
-    </View>
-  );
-};
-
-function Favourite(props) {
+const Search = props => {
+  const [searchText, setSearchText] = useState('');
   const {users} = useSelector(s => s.users);
 
-  const favoriteUser = useMemo(() => {
-    const filteredData = users.filter(i => i.favorite);
-    return filteredData;
-  }, [users]);
+  const searchedUsers = useMemo(() => {
+    const result = users?.filter(
+      (item, i) =>
+        item.first_name.toLowerCase().includes(searchText.toLowerCase()) ||
+        item.last_name.toLowerCase().includes(searchText.toLowerCase()),
+    );
+    return result || [];
+  }, [users, searchText]);
 
   return (
-    <View style={{backgroundColor: '#000', flex: 1}}>
-      <Header {...props} />
+    <View style={styles.container}>
+      <TextInput
+        onChangeText={e => setSearchText(e)}
+        value={searchText}
+        placeholder="Search..."
+      />
       <View style={styles.cardContainer}>
         <FlatList
-          data={favoriteUser}
+          data={searchedUsers}
           numColumns={2}
           horizontal={false}
           keyExtractor={(item, index) => index.toString()}
           style={styles.contentContainer}
           showsVerticalScrollIndicator={false}
           renderItem={({item, index}) => (
-            <RenderCard key={item.id} data={item} {...props} />
+            <RenderCard {...props} key={item.id} data={item} />
           )}
         />
       </View>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -104,4 +92,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Favourite;
+export default Search;

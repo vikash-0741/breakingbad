@@ -9,66 +9,30 @@ import {
 } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import ApiCall from '../utiles';
 import Header from '../Components';
-
-const RenderCard = props => {
-  const {data, usersData, navigation} = props;
-  const [isFav, setIsFav] = useState(false);
-
-  const handleFav = () => setIsFav(v => !v);
-  const navToDetailsScreen = () =>
-    navigation.navigate('DetailsScreen', {data, usersData});
-
-  return (
-    <View style={styles.renderCardContainer}>
-      <TouchableOpacity onPress={navToDetailsScreen}>
-        <Image source={{uri: data.avatar}} style={styles.image} />
-      </TouchableOpacity>
-      <View style={styles.detailContainer}>
-        <View>
-          <Text
-            style={styles.userText}
-            numberOfLines={1}>{`${data.first_name} ${data.last_name} `}</Text>
-          <Text style={styles.subHeadingName}>{data.first_name}</Text>
-        </View>
-        <TouchableOpacity onPress={handleFav} style={styles.iconContainer}>
-          {isFav ? (
-            <AntDesign name="heart" size={24} color="#16ca75" />
-          ) : (
-            <Feather name="heart" size={24} color="#636363" />
-          )}
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
-};
+import {useSelector} from 'react-redux';
+import useOrderActions from '../Store/Actions/Home';
+import RenderCard from '../Components/RenderCard/RenderCard';
 
 function Dashboard(props) {
   const {navigation} = props;
 
-  const [data, setData] = useState([]);
-  console.log('-------->data', data);
+  const {getUsersData} = useOrderActions();
+
+  const {users} = useSelector(s => s.users);
 
   useEffect(() => {
-    loadData();
+    getUsersData();
   }, []);
 
-  const loadData = async () => {
-    const response = await ApiCall({
-      url: 'https://reqres.in/api/users?page=2',
-      method: 'GET',
-    });
-    setData(response.data);
-  };
-
   const navToFav = () => navigation.navigate('favourite');
+  const navToSearch = () => navigation.navigate('Search');
 
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
         <Header headerTitle=" The Breaking bad" />
-        <TouchableOpacity style={{marginTop: 50}}>
+        <TouchableOpacity style={{marginTop: 50}} onPress={navToSearch}>
           <Feather name="search" size={24} color="#fff" />
         </TouchableOpacity>
         <TouchableOpacity
@@ -80,14 +44,14 @@ function Dashboard(props) {
 
       <View style={styles.cardContainer}>
         <FlatList
-          data={data}
+          data={users}
           numColumns={2}
           horizontal={false}
           keyExtractor={(item, index) => index.toString()}
           style={styles.contentContainer}
           showsVerticalScrollIndicator={false}
           renderItem={({item, index}) => (
-            <RenderCard index={index} data={item} usersData={data} {...props} />
+            <RenderCard key={item.id} data={item} {...props} />
           )}
         />
       </View>

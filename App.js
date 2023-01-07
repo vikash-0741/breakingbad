@@ -22,6 +22,9 @@ import Dashboard from './src/Home';
 import React from 'react';
 import Favourite from './src/Favourites';
 import DetailsScreen from './src/DetailsScreen';
+import {Provider} from 'react-redux';
+import Store from './src/Store/store';
+import Search from './src/Search/Search';
 
 /* $FlowFixMe[missing-local-annot] The type annotation(s) required by Flow's
  * LTI update could not be added via codemod */
@@ -35,17 +38,21 @@ function App() {
   };
 
   return (
-    <NavigationContainer>
-      <Stack.Navigator
-        screenOptions={{
-          headerShown: false,
-          // title: 'Breaking bad',
-        }}>
-        <Stack.Screen name="Breaking bad" component={Dashboard} />
-        <Stack.Screen name="favourite" component={Favourite} />
-        <Stack.Screen name="DetailsScreen" component={DetailsScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <Provider store={Store}>
+      <NavigationContainer>
+        <Stack.Navigator
+          screenOptions={{
+            headerShown: false,
+            // title: 'Breaking bad',
+          }}>
+          <Stack.Screen name="Breaking bad" component={Dashboard} />
+          <Stack.Screen name="favourite" component={Favourite} />
+          <Stack.Screen name="DetailsScreen" component={DetailsScreen} />
+          <Stack.Screen name="Search" component={Search} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </Provider>
+
     // <SafeAreaView style={backgroundStyle}>
     //   <StatusBar
     //     barStyle={isDarkMode ? 'light-content' : 'dark-content'}

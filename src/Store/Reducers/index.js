@@ -1,3 +1,3 @@
-import orders from './Orders';
+import users from './Users';
 
-export default {orders};
+export default {users};

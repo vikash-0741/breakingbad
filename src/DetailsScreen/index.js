@@ -1,7 +1,15 @@
-import React from 'react';
-import {Image, ScrollView, Text, TouchableOpacity, View} from 'react-native';
+import React, {useMemo} from 'react';
+import {
+  Dimensions,
+  Image,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {useSelector} from 'react-redux';
 
 const RenderCard = props => {
   const {item} = props;
@@ -71,7 +79,7 @@ const OtherCharacters = props => {
     <View style={{flex: 1}}>
       <Text style={{color: '#fff', fontSize: 24}}>Other characters</Text>
       <ScrollView horizontal style={{flex: 1}}>
-        {usersData.map(item => (
+        {usersData?.map(item => (
           <RenderCard item={item} />
         ))}
       </ScrollView>
@@ -124,16 +132,21 @@ const UserDetails = () => {
 
 function DetailsScreen(props) {
   const {route} = props;
-  const {data, usersData} = route?.params || {};
-  console.log('-------->data main', data);
+  const {data} = route?.params || {};
+
+  const {users} = useSelector(s => s.users);
+
+  const otherUser = useMemo(() => {
+    return users.filter(i => i.id !== data.id);
+  }, [data, users]);
+
   return (
+    // <View style={{height: screenHeight}}>
     <ScrollView
       contentContainerStyle={{
-        flexGrow: 1,
         backgroundColor: '#000',
-        flex: 1,
       }}
-      style={{backgroundColor: '#000', flex: 1, flexGrow: 1}}>
+      style={{backgroundColor: '#000'}}>
       <Header {...props} />
       <Image
         source={{uri: data.avatar}}
@@ -183,8 +196,9 @@ function DetailsScreen(props) {
         Heisenberg
       </Text>
       <UserDetails />
-      <OtherCharacters usersData={usersData} />
+      <OtherCharacters usersData={otherUser} />
     </ScrollView>
+    // </View>
   );
 }
 
